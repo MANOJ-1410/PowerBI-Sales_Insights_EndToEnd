@@ -1,0 +1,62 @@
+relationship c3b62d19-162b-46f9-b2f4-bf3f1904105b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimCustomer.BirthDate
+	toColumn: LocalDateTable_db6ff902-e3b6-462b-9d49-528775b70b08.Date
+
+relationship f73bc8b0-7b2d-41d2-836f-50c075b12744
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimCustomer.DateFirstPurchase
+	toColumn: LocalDateTable_fab108ab-c32a-4ac7-a7d9-2944e36fbf1d.Date
+
+relationship d65e7884-bb56-42b0-9933-882a181ce69a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimDate.FullDateAlternateKey
+	toColumn: LocalDateTable_31bfb5a2-28f4-4eab-b077-66de55341e1a.Date
+
+relationship AutoDetected_cca3f637-f051-406b-b046-8d3221f7cbc8
+	fromColumn: DimCustomer.GeographyKey
+	toColumn: DimGeography.GeographyKey
+
+relationship 8c8b32b5-d0ec-40a8-93d8-e23b43136851
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimProduct.StartDate
+	toColumn: LocalDateTable_32c44a1f-e10e-4459-b26b-3c42f84a8aea.Date
+
+relationship AutoDetected_379a0325-64ff-4149-ae81-f098a5458bf9
+	fromColumn: DimProductSubCategory.ProductCategoryKey
+	toColumn: DimProductCategory.ProductCategoryKey
+
+relationship AutoDetected_8d65f5ed-2a49-4249-9d40-9c6bd3682fb0
+	fromColumn: DimGeography.SalesTerritoryKey
+	toColumn: DimSalesTerritory.SalesTerritoryKey
+
+relationship 9ab941fd-027f-43ef-8e0b-225f1646c1e5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: FactInternetSales.ShipDate
+	toColumn: LocalDateTable_de2fa389-2f2d-4273-a510-b0aca50e7a7b.Date
+
+relationship AutoDetected_2d1dea74-494e-4219-a3b0-c19e427ec1b9
+	fromColumn: FactInternetSales.CurrencyKey
+	toColumn: DimCurrency.CurrencyKey
+
+relationship AutoDetected_5e430dc2-32ce-42ad-9e82-d87756efb0ff
+	fromColumn: FactInternetSales.CustomerKey
+	toColumn: DimCustomer.CustomerKey
+
+relationship AutoDetected_3dff27af-f473-4966-aa3e-c27d53dc1da1
+	isActive: false
+	fromColumn: FactInternetSales.SalesTerritoryKey
+	toColumn: DimSalesTerritory.SalesTerritoryKey
+
+relationship AutoDetected_d173d586-d46b-4222-8ef3-d493386547b3
+	fromColumn: FactInternetSales.ProductKey
+	toColumn: DimProduct.ProductKey
+
+relationship 6f8b648a-5c5d-1770-c993-2a587eeb6650
+	fromColumn: DimProduct.ProductSubcategoryKey
+	toColumn: DimProductSubCategory.ProductSubcategoryAlternateKey
+
+relationship 55d1a380-d63e-835f-7ff4-839403c13608
+	fromColumn: FactInternetSales.OrderDate
+	toColumn: DimDate.FullDateAlternateKey
+

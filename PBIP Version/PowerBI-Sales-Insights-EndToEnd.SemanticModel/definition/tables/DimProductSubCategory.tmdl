@@ -1,0 +1,53 @@
+table DimProductSubCategory
+	lineageTag: ec0e7be3-1379-4520-9881-a05bedd95f02
+
+	column ProductSubcategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c773b3ba-10c7-47a5-b604-0a72dc8df725
+		summarizeBy: count
+		sourceColumn: ProductSubcategoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductSubcategoryAlternateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: bee9ce1b-d4e4-4e46-ae76-a6edf2b79954
+		summarizeBy: none
+		sourceColumn: ProductSubcategoryAlternateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column EnglishProductSubcategoryName
+		dataType: string
+		lineageTag: 0d2626bc-3c2a-4954-947f-42705c50dd48
+		summarizeBy: none
+		sourceColumn: EnglishProductSubcategoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductCategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: da0f4763-3c22-48cd-b05b-1e1c1fc45ec0
+		summarizeBy: none
+		sourceColumn: ProductCategoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimProductSubCategory = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\manoj.c\Desktop\PowerBI\PowerBI-2\DimProductSubCategory.csv"),[Delimiter=",", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"ProductSubcategoryKey", Int64.Type}, {"ProductSubcategoryAlternateKey", Int64.Type}, {"EnglishProductSubcategoryName", type text}, {"SpanishProductSubcategoryName", type text}, {"FrenchProductSubcategoryName", type text}, {"ProductCategoryKey", Int64.Type}}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Change Type",{"ProductSubcategoryKey", "ProductSubcategoryAlternateKey", "EnglishProductSubcategoryName", "ProductCategoryKey"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

@@ -1,0 +1,12 @@
+expression MonthYear =
+		let
+		    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlTSUfJKzFOK1YlWMgKy3VKTwGxjINs3sQjMNgGyHQsgbFOweCWYbQbSWwrRaw5m54DZFiD1pelgtiWQHZxaAGYbGgA5/sklEA7IZr/8MggHZLVLarJSbCwA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [No = _t, Name = _t]),
+		    #"Changed Type" = Table.TransformColumnTypes(Source,{{"No", Int64.Type}, {"Name", type text}})
+		in
+		    #"Changed Type"
+	lineageTag: 91ab8b54-6be7-4d2e-8205-930b675614d7
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

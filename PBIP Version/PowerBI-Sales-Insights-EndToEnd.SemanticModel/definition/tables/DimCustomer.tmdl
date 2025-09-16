@@ -1,0 +1,167 @@
+table DimCustomer
+	lineageTag: 9f7c9894-9dc3-45fa-a21f-6fd927885f1b
+
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e15c16a-5a3a-4c7f-ae5f-440f40ad6194
+		summarizeBy: none
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column GeographyKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 62b9e641-4271-4fa5-9280-62759b49811d
+		summarizeBy: none
+		sourceColumn: GeographyKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column FirstName
+		dataType: string
+		lineageTag: 983a0ad7-94b1-4b16-9f28-e0cbe26461c4
+		summarizeBy: none
+		sourceColumn: FirstName
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastName
+		dataType: string
+		lineageTag: 0da7b078-fddf-45c6-bdc5-7e1aa11f95c9
+		summarizeBy: none
+		sourceColumn: LastName
+
+		annotation SummarizationSetBy = Automatic
+
+	column BirthDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e2863efe-5fd6-4487-a9ec-07117792e004
+		summarizeBy: none
+		sourceColumn: BirthDate
+
+		variation Variation
+			isDefault
+			relationship: c3b62d19-162b-46f9-b2f4-bf3f1904105b
+			defaultHierarchy: LocalDateTable_db6ff902-e3b6-462b-9d49-528775b70b08.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MaritalStatus
+		dataType: string
+		lineageTag: 39a61782-5dd6-4bb1-b060-4e1fdecc5a4b
+		summarizeBy: none
+		sourceColumn: MaritalStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gender
+		dataType: string
+		lineageTag: ad363bd7-d98a-4b32-9653-aebd1b9243da
+		summarizeBy: none
+		sourceColumn: Gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmailAddress
+		dataType: string
+		lineageTag: 6527981f-e249-453a-bc63-7ae9b8a4ef55
+		summarizeBy: none
+		sourceColumn: EmailAddress
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalChildren
+		dataType: int64
+		formatString: 0
+		lineageTag: a8f9b1ce-53ab-4375-9ffc-d3e4616409d7
+		summarizeBy: sum
+		sourceColumn: TotalChildren
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumberChildrenAtHome
+		dataType: int64
+		formatString: 0
+		lineageTag: 6931a73a-ff17-4a17-9952-51185c982266
+		summarizeBy: sum
+		sourceColumn: NumberChildrenAtHome
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateFirstPurchase
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 224d77b1-a292-4a62-8cff-f08ab5738b5d
+		summarizeBy: none
+		sourceColumn: DateFirstPurchase
+
+		variation Variation
+			isDefault
+			relationship: f73bc8b0-7b2d-41d2-836f-50c075b12744
+			defaultHierarchy: LocalDateTable_fab108ab-c32a-4ac7-a7d9-2944e36fbf1d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CommuteDistance
+		dataType: string
+		lineageTag: 4c8769b3-1aeb-443a-b6b1-1bad3c8ec965
+		summarizeBy: none
+		sourceColumn: CommuteDistance
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Customer Full Name'
+		dataType: string
+		lineageTag: 90b6800c-e0ef-4178-8f5e-7b289eee5cb6
+		summarizeBy: none
+		sourceColumn: Customer Full Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Customer Age' = ```
+			
+			VAR __AGE = DATEDIFF(DimCustomer[BirthDate],TODAY(),YEAR)
+			RETURN
+			SWITCH(TRUE(),
+			__AGE > 100, "101-110",
+			__AGE > 90, "91-100",
+			__AGE > 80,"81-90",
+			__AGE > 70, "71-80",
+			__AGE > 60, "61-70",
+			__AGE > 50, "51-60",
+			__AGE > 40, "41-50",
+			__AGE > 30, "31-40",
+			__AGE > 20, "21-30",
+			__AGE > 10, "11-20",
+			"0-10")
+			
+			```
+		lineageTag: 16beb320-6e9b-4315-9cdf-64bb9f840acb
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimCustomer = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\manoj.c\Desktop\PowerBI\PowerBI-2\DimCustomer.csv"),[Delimiter=",", Columns=29, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"CustomerKey", Int64.Type}, {"GeographyKey", Int64.Type}, {"CustomerAlternateKey", type text}, {"Title", type text}, {"FirstName", type text}, {"MiddleName", type text}, {"LastName", type text}, {"NameStyle", Int64.Type}, {"BirthDate", type date}, {"MaritalStatus", type text}, {"Suffix", type text}, {"Gender", type text}, {"EmailAddress", type text}, {"YearlyIncome", Int64.Type}, {"TotalChildren", Int64.Type}, {"NumberChildrenAtHome", Int64.Type}, {"EnglishEducation", type text}, {"SpanishEducation", type text}, {"FrenchEducation", type text}, {"EnglishOccupation", type text}, {"SpanishOccupation", type text}, {"FrenchOccupation", type text}, {"HouseOwnerFlag", Int64.Type}, {"NumberCarsOwned", Int64.Type}, {"AddressLine1", type text}, {"AddressLine2", type text}, {"Phone", type text}, {"DateFirstPurchase", type date}, {"CommuteDistance", type text}}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Change Type",{"CustomerKey", "GeographyKey", "FirstName", "LastName", "BirthDate", "MaritalStatus", "Gender", "EmailAddress", "TotalChildren", "NumberChildrenAtHome", "DateFirstPurchase", "CommuteDistance"}),
+				    #"Added Custom" = Table.AddColumn(#"Removed Other Columns", "Customer Full Name", each [FirstName] & " " & [LastName]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Added Custom",{{"Customer Full Name", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

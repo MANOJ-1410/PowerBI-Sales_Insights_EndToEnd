@@ -1,0 +1,76 @@
+table DimGeography
+	lineageTag: 02ed01bf-4dd2-4d35-b4a1-3bc70b665f40
+
+	column GeographyKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c1dfd912-566d-4d38-883e-356ca5121fb4
+		summarizeBy: none
+		sourceColumn: GeographyKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 2b1af81a-a637-4fa8-bf08-50403524baf6
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column StateProvinceCode
+		dataType: string
+		lineageTag: ea67b6c8-550c-4b0b-8624-10551bd407a9
+		summarizeBy: none
+		sourceColumn: StateProvinceCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column StateProvinceName
+		dataType: string
+		lineageTag: 17427da5-56ea-4997-9a75-7393528f9c0a
+		summarizeBy: none
+		sourceColumn: StateProvinceName
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryRegionCode
+		dataType: string
+		lineageTag: a196a895-de91-4af4-84f0-344bec8c7f72
+		summarizeBy: none
+		sourceColumn: CountryRegionCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column EnglishCountryRegionName
+		dataType: string
+		lineageTag: 2cca0dec-69c5-4f17-bc36-cf42383dfd86
+		summarizeBy: none
+		sourceColumn: EnglishCountryRegionName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 8df375b7-320a-4dce-8a53-19b4c75fafcb
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimGeography = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\manoj.c\Desktop\PowerBI\PowerBI-2\DimGeography.csv"),[Delimiter=",", Columns=11, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"GeographyKey", Int64.Type}, {"City", type text}, {"StateProvinceCode", type text}, {"StateProvinceName", type text}, {"CountryRegionCode", type text}, {"EnglishCountryRegionName", type text}, {"SpanishCountryRegionName", type text}, {"FrenchCountryRegionName", type text}, {"PostalCode", type text}, {"SalesTerritoryKey", Int64.Type}, {"IpAddressLocator", type text}}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Change Type",{"GeographyKey", "City", "StateProvinceCode", "StateProvinceName", "CountryRegionCode", "EnglishCountryRegionName", "SalesTerritoryKey"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

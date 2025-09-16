@@ -1,0 +1,126 @@
+table DimDate
+	lineageTag: 46519353-54d1-4198-bcd9-73f27102b81f
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: f08e8ad2-b907-4553-aa6b-05055185c4d0
+		summarizeBy: count
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullDateAlternateKey
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 38cdf003-3ec8-4f8d-ba5b-1b8bb0068687
+		summarizeBy: none
+		sourceColumn: FullDateAlternateKey
+
+		variation Variation
+			isDefault
+			relationship: d65e7884-bb56-42b0-9933-882a181ce69a
+			defaultHierarchy: LocalDateTable_31bfb5a2-28f4-4eab-b077-66de55341e1a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DayNumberOfWeek
+		dataType: int64
+		formatString: 0
+		lineageTag: c4b995ab-b392-402f-bb86-7a9a07a9a3c6
+		summarizeBy: sum
+		sourceColumn: DayNumberOfWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column EnglishDayNameOfWeek
+		dataType: string
+		lineageTag: 67664de8-8d7c-4b1f-855b-9d741875227e
+		summarizeBy: none
+		sourceColumn: EnglishDayNameOfWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeekNumberOfYear
+		dataType: int64
+		formatString: 0
+		lineageTag: d326c0a0-9b62-444f-bebf-63df7027a5ce
+		summarizeBy: sum
+		sourceColumn: WeekNumberOfYear
+
+		annotation SummarizationSetBy = Automatic
+
+	column FrenchMonthName
+		dataType: string
+		lineageTag: aca06c36-db9e-4337-98c9-068582840bb6
+		summarizeBy: none
+		sourceColumn: FrenchMonthName
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNumberOfYear
+		dataType: int64
+		formatString: 0
+		lineageTag: 30b93373-4d09-4997-9679-7910ae7f4fbd
+		summarizeBy: sum
+		sourceColumn: MonthNumberOfYear
+
+		annotation SummarizationSetBy = Automatic
+
+	column CalendarYear
+		dataType: int64
+		formatString: 0
+		lineageTag: daa441cf-ee37-446b-a1f6-7623922accf5
+		summarizeBy: sum
+		sourceColumn: CalendarYear
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthYear
+		dataType: string
+		lineageTag: 4e9a3b3a-e7bd-469f-8087-1ce5791f58fa
+		summarizeBy: none
+		sourceColumn: MonthYear
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Short Month Name' =
+			SWITCH(DimDate[MonthNumberOfYear],
+			1, "Jan",
+			2, "Feb",
+			3, "Mar",
+			4, "Apr",
+			5, "May",
+			6, "Jun",
+			7, "Jul",
+			8, "Aug",
+			9, "Sep",
+			10, "Oct",
+			11,"Nov",
+			"Dec")
+		lineageTag: aab1867a-7c21-4535-86a3-9f6943ec0958
+		summarizeBy: none
+		sortByColumn: MonthNumberOfYear
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\manoj.c\Desktop\PowerBI\PowerBI-2\DimDate.csv"),[Delimiter=",", Columns=19, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"DateKey", Int64.Type}, {"FullDateAlternateKey", type date}, {"DayNumberOfWeek", Int64.Type}, {"EnglishDayNameOfWeek", type text}, {"SpanishDayNameOfWeek", type text}, {"FrenchDayNameOfWeek", type text}, {"DayNumberOfMonth", Int64.Type}, {"DayNumberOfYear", Int64.Type}, {"WeekNumberOfYear", Int64.Type}, {"EnglishMonthName", type text}, {"SpanishMonthName", type text}, {"FrenchMonthName", type text}, {"MonthNumberOfYear", Int64.Type}, {"CalendarQuarter", Int64.Type}, {"CalendarYear", Int64.Type}, {"CalendarSemester", Int64.Type}, {"FiscalQuarter", Int64.Type}, {"FiscalYear", Int64.Type}, {"FiscalSemester", Int64.Type}}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Change Type",{"DateKey", "FullDateAlternateKey", "DayNumberOfWeek", "EnglishDayNameOfWeek", "WeekNumberOfYear", "FrenchMonthName", "MonthNumberOfYear", "CalendarYear"}),
+				    #"Added Custom Column" = Table.AddColumn(#"Removed Other Columns", "MonthYear", each Text.Combine({Date.ToText([FullDateAlternateKey], "MMM"), "-", Date.ToText([FullDateAlternateKey], "yyyy")}), type text)
+				in
+				    #"Added Custom Column"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

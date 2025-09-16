@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "PowerBI-Sales-Insights-EndToEnd"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "ce8de6f6-a630-4e89-a07c-17a01666fa64"
+  }
+}

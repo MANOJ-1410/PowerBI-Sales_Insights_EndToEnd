@@ -1,0 +1,66 @@
+table MeasureTable
+	lineageTag: f2981cdd-1f8c-4e5d-a7ac-9dd05ff46d81
+
+	measure SalesAmt = SUM(FactInternetSales[SalesAmount])
+		formatString: "₹"\ #,0;#,0\ -"₹";"₹"\ #,0
+		lineageTag: 9849e59c-72f1-4295-b0a0-ef285fce4ea1
+
+		annotation PBI_FormatHint = {"currencyCulture":"bn-IN"}
+
+	measure 'YTD Sales' = ```
+			
+			 CALCULATE(
+			    [SalesAmt] , DATESYTD(DimDate[FullDateAlternateKey])
+			 )
+			```
+		formatString: "₹"\ #,0.00;#,0.00\ -"₹";"₹"\ #,0.00
+		lineageTag: 0aee0bad-ebab-4d73-b5c2-4ca7f65bfbd9
+
+		annotation PBI_FormatHint = {"currencyCulture":"bn-IN"}
+
+	measure SPLY =
+			
+			CALCULATE([SalesAmt], SAMEPERIODLASTYEAR(DimDate[FullDateAlternateKey]))
+		formatString: "₹"\ #,0;#,0\ -"₹";"₹"\ #,0
+		lineageTag: 40357eb7-a5b2-4223-ba49-579794bc7e3f
+
+		annotation PBI_FormatHint = {"currencyCulture":"bn-IN"}
+
+	measure 'SPLY Percent' = ```
+			
+			IF (
+			    ISBLANK([SPLY]),
+			    BLANK(),
+			    DIVIDE([SalesAmt] - [SPLY], [SalesAmt], 0)
+			)
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f342d91f-4f75-4ccd-8e81-a1b639d85749
+
+	column MeasureTable
+		dataType: int64
+		isHidden
+		lineageTag: c2ba2374-c9fd-4311-b25e-974546f652eb
+		summarizeBy: sum
+		sourceColumn: MeasureTable
+
+		changedProperty = IsHidden
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition MeasureTable = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [MeasureTable = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"MeasureTable", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

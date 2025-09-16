@@ -1,0 +1,44 @@
+table DimProductCategory
+	lineageTag: 7ac15bb0-35f8-4e2d-9c8e-d9e0e6de772b
+
+	column ProductCategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: fa01bec6-cf75-4b0d-9ad0-329a53bd8549
+		summarizeBy: none
+		sourceColumn: ProductCategoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductCategoryAlternateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e68b3589-7b15-4393-9bcd-26d7c86edac9
+		summarizeBy: none
+		sourceColumn: ProductCategoryAlternateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column EnglishProductCategoryName
+		dataType: string
+		lineageTag: e4da9676-ab89-4db1-b8bb-523bb142c35c
+		summarizeBy: none
+		sourceColumn: EnglishProductCategoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimProductCategory = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\manoj.c\Desktop\PowerBI\PowerBI-2\DimProductCategory.csv"),[Delimiter=",", Columns=5, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"ProductCategoryKey", Int64.Type}, {"ProductCategoryAlternateKey", Int64.Type}, {"EnglishProductCategoryName", type text}, {"SpanishProductCategoryName", type text}, {"FrenchProductCategoryName", type text}}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Change Type",{"ProductCategoryKey", "ProductCategoryAlternateKey", "EnglishProductCategoryName"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

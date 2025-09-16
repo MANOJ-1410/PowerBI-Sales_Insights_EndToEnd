@@ -1,0 +1,95 @@
+table DimSalesTerritory
+	lineageTag: 57b5591d-3eee-45f0-817c-010792157340
+
+	column SalesTerritoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: cd7a71b2-6e5b-42d2-ad67-f2cc3aaacb73
+		summarizeBy: none
+		sourceColumn: SalesTerritoryKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryAlternateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: ba5070af-ae0a-40c2-ab0a-195f54bcb434
+		summarizeBy: none
+		sourceColumn: SalesTerritoryAlternateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryRegion
+		dataType: string
+		lineageTag: 03ec7fff-b5bc-479e-bd9e-fa2f9137769f
+		summarizeBy: none
+		sourceColumn: SalesTerritoryRegion
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryCountry
+		dataType: string
+		lineageTag: 10be560d-9ee1-4378-b314-8fe149034999
+		summarizeBy: none
+		sourceColumn: SalesTerritoryCountry
+
+		annotation SummarizationSetBy = Automatic
+
+	column SalesTerritoryGroup
+		dataType: string
+		lineageTag: 15d10419-00f1-4010-85da-30b49bd2fd23
+		summarizeBy: none
+		sourceColumn: SalesTerritoryGroup
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"DimSalesTerritory","TableItemName":"SalesTerritoryGroup (groups)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column 'SalesTerritoryGroup (groups)' =
+			SWITCH(
+				TRUE,
+				ISBLANK('DimSalesTerritory'[SalesTerritoryGroup]),
+				"(Blank)",
+				'DimSalesTerritory'[SalesTerritoryGroup] IN {"North America"},
+				"North America",
+				"Other"
+			)
+		lineageTag: ccee487b-30a7-42ef-b991-a77ac21db36d
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "DimSalesTerritory"
+				          }
+				        },
+				        "Property": "SalesTerritoryGroup"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"d","Entity":"DimSalesTerritory"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"d"}},"Property":"SalesTerritoryGroup"}}],"GroupItems":[{"DisplayName":"(Blank)","BlankDefaultPlaceholder":true},{"DisplayName":"North America","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"d"}},"Property":"SalesTerritoryGroup"}}],"Values":[[{"Literal":{"Value":"'North America'"}}]]}}},{"DisplayName":"Other"}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimSalesTerritory = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\manoj.c\Desktop\PowerBI\PowerBI-2\DimSalesTerritory.csv"),[Delimiter=",", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"SalesTerritoryKey", Int64.Type}, {"SalesTerritoryAlternateKey", Int64.Type}, {"SalesTerritoryRegion", type text}, {"SalesTerritoryCountry", type text}, {"SalesTerritoryGroup", type text}, {"SalesTerritoryImage", type text}}),
+				    #"Removed Other Columns" = Table.SelectColumns(#"Change Type",{"SalesTerritoryKey", "SalesTerritoryAlternateKey", "SalesTerritoryRegion", "SalesTerritoryCountry", "SalesTerritoryGroup"})
+				in
+				    #"Removed Other Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+
